@@ -1,0 +1,73 @@
+<style>
+    #halloween-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+    }
+
+    .spider-web {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        opacity: 0.7;
+        filter: invert(1) drop-shadow(0px 0px 5px black); /* Makes SVG white-ish */
+    }
+
+    .hanging-bat {
+        position: absolute;
+        top: 0;
+        left: 100px;
+        width: 120px;
+        transform-origin: top center;
+        animation: bat-swing 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 5px orange);
+    }
+
+    .pumpkin-corner {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        width: 150px;
+        filter: drop-shadow(0 0 10px orange);
+    }
+
+    @keyframes bat-swing {
+        0% { transform: rotate(5deg) translateY(0); }
+        50% { transform: rotate(-5deg) translateY(5px); }
+        100% { transform: rotate(5deg) translateY(0); }
+    }
+</style>
+
+<div id="halloween-overlay">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Spider_web_icon.svg/1024px-Spider_web_icon.svg.png" 
+         class="spider-web" alt="Web">
+    
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Bat_icon_black.svg/1024px-Bat_icon_black.svg.png" 
+         class="hanging-bat" alt="Bat">
+
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Jack-o%27-Lantern_2003-10-31.svg/1200px-Jack-o%27-Lantern_2003-10-31.svg.png" 
+         class="pumpkin-corner" alt="Pumpkin">
+</div>
+
+<script>
+    // Logic: Random lightning flash effect
+    (function lightning() {
+        const overlay = document.getElementById('halloween-overlay');
+        
+        function flash() {
+            overlay.style.backgroundColor = 'rgba(255,255,255,0.2)';
+            setTimeout(() => {
+                overlay.style.backgroundColor = 'transparent';
+                // Schedule next flash between 5 and 15 seconds
+                setTimeout(flash, Math.random() * 10000 + 5000);
+            }, 100);
+        }
+        setTimeout(flash, 5000);
+    })();
+</script>
