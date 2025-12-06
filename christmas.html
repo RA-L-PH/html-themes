@@ -1,0 +1,73 @@
+<style>
+    #womens-day-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+    .side-border {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 8px;
+        background: linear-gradient(to bottom, #d500f9, #ff4081);
+        box-shadow: 2px 0 10px rgba(213, 0, 249, 0.4);
+    }
+
+    .flower-decoration {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 180px;
+        opacity: 0.9;
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .floating-petal {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: radial-gradient(circle, #f8bbd0, #f48fb1);
+        border-radius: 50% 0 50% 0;
+        opacity: 0.7;
+    }
+
+    @keyframes float-petal {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        20% { opacity: 0.8; }
+        100% { transform: translateY(-50vh) rotate(360deg); opacity: 0; }
+    }
+</style>
+
+<div id="womens-day-overlay">
+    <div class="side-border"></div>
+
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pink_flower_icon_2.svg/1024px-Pink_flower_icon_2.svg.png" 
+         class="flower-decoration" 
+         alt="Flower">
+</div>
+
+<script>
+    (function petals() {
+        const container = document.getElementById('womens-day-overlay');
+        
+        setInterval(() => {
+            const petal = document.createElement('div');
+            petal.classList.add('floating-petal');
+            // Start from bottom area
+            petal.style.bottom = '0';
+            petal.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = Math.random() * 5 + 5;
+            petal.style.animation = `float-petal ${duration}s ease-in forwards`;
+            
+            container.appendChild(petal);
+            setTimeout(() => petal.remove(), duration * 1000);
+        }, 800);
+    })();
+</script>
