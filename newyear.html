@@ -55,8 +55,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        pointer-events: auto;
-        cursor: default;
+        pointer-events: none;
     }
 
     @keyframes shimmer {
@@ -164,9 +163,11 @@
             }
         }
 
-        // Click event listener on canvas
-        canvas.addEventListener('click', (e) => {
-            createConfettiBurst(e.clientX, e.clientY);
+        // Click event listener - Hold Shift and click to create confetti
+        document.addEventListener('click', (e) => {
+            if (e.shiftKey) {
+                createConfettiBurst(e.clientX, e.clientY);
+            }
         });
 
         // Animation loop
