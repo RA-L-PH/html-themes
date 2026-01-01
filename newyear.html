@@ -163,12 +163,12 @@
             }
         }
 
-        // Click event listener - Hold Shift and click to create confetti
+        // Click event listener - Create confetti on every click
+        // Don't prevent default so form interactions still work
         document.addEventListener('click', (e) => {
-            if (e.shiftKey) {
-                createConfettiBurst(e.clientX, e.clientY);
-            }
-        });
+            createConfettiBurst(e.clientX, e.clientY);
+            // No preventDefault or stopPropagation - let the click pass through!
+        }, false); // Use bubble phase so form elements get the click first
 
         // Animation loop
         function animate() {

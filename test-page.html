@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay Test Page - Form Components</title>
+    <meta name="description"
+        content="A comprehensive test page for testing HTML overlays with form components, buttons, text inputs, and links.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        /* Overlay Control Panel */
+        .overlay-control {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .overlay-control h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .overlay-control h2::before {
+            content: "🎨";
+            font-size: 1.8rem;
+        }
+
+        .overlay-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .overlay-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .overlay-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .overlay-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .overlay-btn:active {
+            transform: scale(0.95);
+        }
+
+        .overlay-btn.christmas {
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+        }
+
+        .overlay-btn.newyear {
+            background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+        }
+
+        .overlay-btn.halloween {
+            background: linear-gradient(135deg, #FF6B00 0%, #8B00FF 100%);
+        }
+
+        .overlay-btn.remove {
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+        }
+
+        .cdn-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cdn-info h3 {
+            font-size: 0.9rem;
+            color: var(--info-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .cdn-info input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cdn-info small {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section h2::before {
+            content: "📝";
+            font-size: 1.8rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"],
+        input[type="tel"],
+        textarea,
+        select {
+            padding: 0.875rem 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::after {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--border-color);
+        }
+
+        /* Links Section */
+        .links-section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.8s both;
+        }
+
+        .links-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .links-section h2::before {
+            content: "🔗";
+            font-size: 1.8rem;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .link-card {
+            padding: 1.5rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .link-card:hover {
+            transform: translateY(-4px);
+            border-color: #667eea;
+            box-shadow: var(--shadow-md);
+        }
+
+        .link-card .link-icon {
+            font-size: 2rem;
+        }
+
+        .link-card .link-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .link-card .link-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideUp 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .status-indicator {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🎭 Overlay Test Page</h1>
+            <p class="subtitle">Test your HTML overlays with real form components, buttons, and links</p>
+        </header>
+
+        <!-- Overlay Control Panel -->
+        <section class="overlay-control">
+            <h2>Overlay Controls</h2>
+            <div class="overlay-buttons">
+                <button class="overlay-btn christmas" onclick="loadOverlay('christmas')">
+                    🎄 Christmas Overlay
+                </button>
+                <button class="overlay-btn newyear" onclick="loadOverlay('newyear')">
+                    🎆 New Year Overlay
+                </button>
+                <button class="overlay-btn halloween" onclick="loadOverlay('halloween')">
+                    🎃 Halloween Overlay
+                </button>
+                <button class="overlay-btn remove" onclick="removeOverlay()">
+                    ❌ Remove Overlay
+                </button>
+            </div>
+
+            <div class="cdn-info">
+                <h3>📦 Using raw.githack CDN</h3>
+                <input type="text" id="cdn-base-url" placeholder="https://raw.githack.com/username/repo/branch/"
+                    value="">
+                <small>Enter your raw.githack base URL (e.g., https://raw.githack.com/RA-L-PH/html-themes/main/)</small>
+            </div>
+        </section>
+
+        <!-- Form Section -->
+        <section class="form-section">
+            <h2>Form Components</h2>
+            <form id="test-form" onsubmit="handleSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number">Number</label>
+                        <input type="number" id="number" name="number" placeholder="42" min="0" max="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <select id="country" name="country">
+                            <option value="">Select a country</option>
+                            <option value="us">United States</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="ca">Canada</option>
+                            <option value="au">Australia</option>
+                            <option value="in">India</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Enter your message here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Submit Form</button>
+                    <button type="button" class="btn btn-success" onclick="showAlert('success')">Success
+                        Button</button>
+                    <button type="button" class="btn btn-danger" onclick="showAlert('danger')">Danger Button</button>
+                    <button type="button" class="btn btn-warning" onclick="showAlert('warning')">Warning
+                        Button</button>
+                    <button type="button" class="btn btn-info" onclick="showAlert('info')">Info Button</button>
+                    <button type="reset" class="btn btn-outline">Reset Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Links Section -->
+        <section class="links-section">
+            <h2>Interactive Links</h2>
+            <div class="links-grid">
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'Documentation')">
+                    <span class="link-icon">📚</span>
+                    <span class="link-title">Documentation</span>
+                    <span class="link-desc">Read the complete documentation</span>
+                </a>
+
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'GitHub')">
+                    <span class="link-icon">💻</span>
+                    <span class="link-title">GitHub Repository</span>
+                    <span class="link-desc">View source code on GitHub</span>
+                </a>
+
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'Support')">
+                    <span class="link-icon">💬</span>
+                    <span class="link-title">Support</span>
+                    <span class="link-desc">Get help from our community</span>
+                </a>
+
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'API')">
+                    <span class="link-icon">🔌</span>
+                    <span class="link-title">API Reference</span>
+                    <span class="link-desc">Explore our API endpoints</span>
+                </a>
+
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'Blog')">
+                    <span class="link-icon">✍️</span>
+                    <span class="link-title">Blog</span>
+                    <span class="link-desc">Read our latest articles</span>
+                </a>
+
+                <a href="#" class="link-card" onclick="handleLinkClick(event, 'Contact')">
+                    <span class="link-icon">📧</span>
+                    <span class="link-title">Contact Us</span>
+                    <span class="link-desc">Get in touch with our team</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Status Indicator -->
+    <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span id="status-text">Ready to test overlays</span>
+    </div>
+
+    <!-- Overlay Container (dynamically loaded) -->
+    <div id="overlay-container"></div>
+
+    <script>
+        let currentOverlay = null;
+
+        // Load overlay from CDN
+        function loadOverlay(type) {
+            const cdnBaseUrl = document.getElementById('cdn-base-url').value.trim();
+
+            if (!cdnBaseUrl) {
+                alert('Please enter your raw.githack CDN base URL first!');
+                document.getElementById('cdn-base-url').focus();
+                return;
+            }
+
+            // Remove existing overlay
+            removeOverlay();
+
+            // Construct the URL
+            const overlayUrl = `${cdnBaseUrl}${type}.html`;
+
+            updateStatus(`Loading ${type} overlay...`, 'loading');
+
+            // Fetch the overlay HTML
+            fetch(overlayUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Insert the overlay HTML into the container
+                    document.getElementById('overlay-container').innerHTML = html;
+                    currentOverlay = type;
+                    updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} overlay loaded successfully!`, 'success');
+
+                    // Execute any scripts in the loaded HTML
+                    executeScripts();
+                })
+                .catch(error => {
+                    console.error('Error loading overlay:', error);
+                    updateStatus(`Failed to load ${type} overlay. Check console for details.`, 'error');
+                    alert(`Failed to load overlay from: ${overlayUrl}\n\nError: ${error.message}\n\nMake sure:\n1. Your CDN URL is correct\n2. The file exists in your repository\n3. You're using the correct branch name`);
+                });
+        }
+
+        // Execute scripts from loaded HTML
+        function executeScripts() {
+            const container = document.getElementById('overlay-container');
+            const scripts = container.getElementsByTagName('script');
+
+            for (let script of scripts) {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.body.appendChild(newScript);
+            }
+        }
+
+        // Remove overlay
+        function removeOverlay() {
+            document.getElementById('overlay-container').innerHTML = '';
+            currentOverlay = null;
+            updateStatus('Overlay removed', 'success');
+        }
+
+        // Update status indicator
+        function updateStatus(text, type = 'success') {
+            const statusText = document.getElementById('status-text');
+            const statusDot = document.querySelector('.status-dot');
+
+            statusText.textContent = text;
+
+            // Update dot color based on type
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                warning: '#f59e0b',
+                loading: '#3b82f6'
+            };
+
+            statusDot.style.background = colors[type] || colors.success;
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            console.log('Form submitted:', data);
+            updateStatus('Form submitted successfully!', 'success');
+
+            alert('Form submitted! Check console for data.\n\n' + JSON.stringify(data, null, 2));
+        }
+
+        // Handle button clicks
+        function showAlert(type) {
+            const messages = {
+                success: '✅ Success! Operation completed successfully.',
+                danger: '❌ Danger! This action requires confirmation.',
+                warning: '⚠️ Warning! Please review before proceeding.',
+                info: 'ℹ️ Info: This is an informational message.'
+            };
+
+            updateStatus(messages[type], type === 'danger' ? 'error' : type);
+            alert(messages[type]);
+        }
+
+        // Handle link clicks
+        function handleLinkClick(event, linkName) {
+            event.preventDefault();
+            updateStatus(`Clicked on ${linkName} link`, 'info');
+            console.log(`Link clicked: ${linkName}`);
+            alert(`You clicked on: ${linkName}\n\nThis is a test link to verify overlay interactions.`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Test page loaded successfully!');
+            console.log('Instructions:');
+            console.log('1. Enter your raw.githack CDN base URL');
+            console.log('2. Click on any overlay button to load it');
+            console.log('3. Test form interactions with the overlay active');
+            console.log('4. Use "Remove Overlay" to clear the current overlay');
+        });
+    </script>
+</body>
+
+</html>
