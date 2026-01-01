@@ -93,13 +93,13 @@
 <div id="christmas-overlay">
     <div class="snow-container" id="snow-container"></div>
 
-    <!-- Realistic Fir Branch -->
-    <img src="https://freepngimg.com/thumb/fir_branch/4-2-fir-branch-transparent-png.png" class="holly-branch"
-        alt="Fir Branch" onerror="this.style.display='none'">
+    <!-- Realistic Fir Branch (CORS Friendly) -->
+    <img src="https://pngimg.com/d/christmas_branch_PNG26.png" class="holly-branch" alt="Fir Branch"
+        onerror="this.style.display='none'">
 
-    <!-- Realistic Red Bauble -->
-    <img src="https://freepngimg.com/thumb/christmas_ball/1-2-christmas-ball-png-hd.png" class="bauble-corner"
-        alt="Christmas Bauble" onerror="this.style.display='none'">
+    <!-- Realistic Red Bauble (CORS Friendly) -->
+    <img src="https://pngimg.com/d/christmas_ball_PNG1.png" class="bauble-corner" alt="Christmas Bauble"
+        onerror="this.style.display='none'">
 </div>
 
 <script>
@@ -110,17 +110,17 @@
         let activeSnowflakes = 0;
 
         function createSnowflake() {
-            if (document.hidden) return; // Save resources when tab hidden
+            if (document.hidden) return;
             if (activeSnowflakes > MAX_SNOWFLAKES) return;
 
             const flake = document.createElement('div');
             flake.classList.add('snowflake');
-            flake.textContent = '❄'; // Unicode snowflake
+            flake.textContent = '❄';
 
             // Random properties
             const size = Math.random() * 1.5 + 0.5 + 'em';
             const left = Math.random() * 100 + 'vw';
-            const duration = Math.random() * 5 + 5 + 's'; // 5-10s fall time
+            const duration = Math.random() * 5 + 5 + 's';
             const delay = Math.random() * 2 + 's';
 
             flake.style.fontSize = size;
