@@ -1,0 +1,143 @@
+<style>
+    #christmas-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        pointer-events: none;
+        /* Subtle frost vignette */
+        box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.4);
+        transition: box-shadow 0.3s ease;
+    }
+
+    /* Falling Snow Container */
+    .snow-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .snowflake {
+        position: absolute;
+        top: -10px;
+        color: white;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        animation: fall linear forwards;
+    }
+
+    /* Decorative Images */
+    .holly-branch {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 250px;
+        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.3));
+        transition: all 0.3s ease;
+        max-width: 40vw;
+    }
+
+    .santa-climber {
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        width: 180px;
+        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.3));
+        transition: all 0.3s ease;
+        max-width: 30vw;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(110vh) rotate(360deg);
+        }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        #christmas-overlay {
+            box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.3);
+        }
+
+        .holly-branch {
+            width: 150px;
+        }
+
+        .santa-climber {
+            width: 120px;
+            left: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #christmas-overlay {
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .holly-branch {
+            width: 100px;
+            opacity: 0.8;
+        }
+
+        .santa-climber {
+            width: 80px;
+            left: 5px;
+            opacity: 0.9;
+        }
+    }
+</style>
+
+<div id="christmas-overlay">
+    <div class="snow-container" id="snow-container"></div>
+
+    <!-- Festive Branch -->
+    <img src="https://pngimg.com/d/christmas_branch_PNG26.png" class="holly-branch" alt="Christmas Branch"
+        onerror="this.style.display='none'">
+
+    <!-- Santa or Gift -->
+    <img src="https://pngimg.com/d/santa_claus_PNG38515.png" class="santa-climber" alt="Santa"
+        onerror="this.style.display='none'">
+</div>
+
+<script>
+    // Logic: Falling Snow
+    (function snow() {
+        const container = document.getElementById('snow-container');
+        const MAX_SNOWFLAKES = 50;
+        let activeSnowflakes = 0;
+
+        function createSnowflake() {
+            if (document.hidden) return; // Save resources when tab hidden
+            if (activeSnowflakes > MAX_SNOWFLAKES) return;
+
+            const flake = document.createElement('div');
+            flake.classList.add('snowflake');
+            flake.textContent = '❄'; // Unicode snowflake
+
+            // Random properties
+            const size = Math.random() * 1.5 + 0.5 + 'em';
+            const left = Math.random() * 100 + 'vw';
+            const duration = Math.random() * 5 + 5 + 's'; // 5-10s fall time
+            const delay = Math.random() * 2 + 's';
+
+            flake.style.fontSize = size;
+            flake.style.left = left;
+            flake.style.animationDuration = duration;
+            flake.style.opacity = Math.random();
+
+            container.appendChild(flake);
+            activeSnowflakes++;
+
+            // Remove after animation
+            setTimeout(() => {
+                flake.remove();
+                activeSnowflakes--;
+            }, parseFloat(duration) * 1000);
+        }
+
+        // Create snow continuously
+        setInterval(createSnowflake, 300);
+    })();
+</script>
