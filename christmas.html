@@ -26,10 +26,20 @@
         width: 10px;
         height: 10px;
         background: white;
+        /* Keep it white/snowy */
         border-radius: 50%;
-        opacity: 0.9;
+        opacity: 0.95;
         animation: fall linear forwards;
-        box-shadow: 0 0 5px rgba(255, 255, 255, 1);
+        /* Dark shadow for visibility on light backgrounds */
+        box-shadow:
+            0 0 2px rgba(0, 0, 0, 0.5),
+            /* Dark outline */
+            0 0 5px rgba(0, 0, 0, 0.3),
+            /* Soft dark glow */
+            0 0 10px rgba(255, 255, 255, 0.8);
+        /* White glow for depth */
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        /* Subtle dark border */
     }
 
     /* Christmas Lights Container */

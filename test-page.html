@@ -714,17 +714,38 @@
         // Execute scripts from loaded HTML
         function executeScripts() {
             const container = document.getElementById('overlay-container');
-            const scripts = container.getElementsByTagName('script');
+            const scripts = container.querySelectorAll('script');
 
-            for (let script of scripts) {
+            // Remove script tags from container to prevent duplication
+            scripts.forEach(script => {
                 const newScript = document.createElement('script');
+
                 if (script.src) {
+                    // External script
                     newScript.src = script.src;
+                    newScript.async = false; // Maintain execution order
                 } else {
-                    newScript.textContent = script.textContent;
+                    // Inline script - use a function wrapper to execute in global scope
+                    const scriptCode = script.textContent || script.innerHTML;
+                    try {
+                        // Execute in global scope using Function constructor
+                        const executeInGlobalScope = new Function(scriptCode);
+                        executeInGlobalScope();
+                        console.log('✅ Executed overlay script successfully');
+                        return; // Don't append if using Function constructor
+                    } catch (error) {
+                        console.error('❌ Error executing overlay script:', error);
+                        // Fall back to appending
+                        newScript.textContent = scriptCode;
+                    }
                 }
+
+                // Append the script to body
                 document.body.appendChild(newScript);
-            }
+
+                // Remove the original script from container
+                script.remove();
+            });
         }
 
         // Remove overlay
