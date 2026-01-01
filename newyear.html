@@ -8,66 +8,56 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        pointer-events: none;
-        /* Luxurious gold/black dimming */
+        pointer-events: auto;
+        /* Enable clicks for confetti */
         box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8);
         transition: box-shadow 0.3s ease;
+        cursor: default;
     }
 
-    /* 2026 Text */
-    .year-container {
+    /* Corner Text */
+    .corner-text {
         position: absolute;
-        top: 20px;
-        width: 100%;
-        text-align: center;
         font-family: 'Cinzel', serif;
-        z-index: 2;
-    }
-
-    .year-text {
-        font-size: 4rem;
         font-weight: 700;
         color: transparent;
         background: linear-gradient(to bottom, #cfc09f 0%, #ffecb3 20%, #3a2c0f 100%);
         -webkit-background-clip: text;
         background-clip: text;
         filter: drop-shadow(0 2px 5px black);
-        margin: 0;
-        opacity: 0.9;
         animation: shimmer 3s infinite linear;
-    }
-
-    .sub-text {
-        font-size: 1.2rem;
-        color: #ffecb3;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        margin-top: -10px;
-        opacity: 0.8;
-        text-shadow: 0 2px 5px black;
-    }
-
-    /* Decorations */
-    .champagne-group {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 200px;
-        /* Reduced specific size from 250 to avoid pixelation if small */
-        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
-        transition: all 0.3s ease;
-        max-width: 35vw;
+        pointer-events: none;
         z-index: 2;
+        text-align: center;
     }
 
-    /* Canvas for fireworks & confetti */
-    #celebration-canvas {
+    .corner-text.top-left {
+        top: 30px;
+        left: 30px;
+        font-size: 2.5rem;
+        transform: rotate(-30deg);
+        transform-origin: center center;
+    }
+
+    .corner-text.top-right {
+        top: 30px;
+        right: 30px;
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        transform: rotate(30deg);
+        transform-origin: center center;
+    }
+
+    /* Canvas for confetti */
+    #confetti-canvas {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 0;
+        z-index: 1;
+        pointer-events: none;
     }
 
     @keyframes shimmer {
@@ -84,73 +74,59 @@
         }
     }
 
-    /* Tablet Responsive */
+    /* Responsive */
     @media (max-width: 768px) {
         #newyear-overlay {
             box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
         }
 
-        .year-text {
-            font-size: 3rem;
+        .corner-text.top-left {
+            font-size: 2rem;
+            top: 25px;
+            left: 25px;
         }
 
-        .sub-text {
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-        }
-
-        .champagne-group {
-            width: 150px;
-            right: 0;
+        .corner-text.top-right {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            top: 25px;
+            right: 25px;
         }
     }
 
-    /* Mobile Responsive */
     @media (max-width: 480px) {
         #newyear-overlay {
             box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
         }
 
-        .year-container {
-            top: 10px;
+        .corner-text.top-left {
+            font-size: 1.5rem;
+            top: 20px;
+            left: 20px;
         }
 
-        .year-text {
-            font-size: 2.2rem;
-            opacity: 0.9;
-        }
-
-        .sub-text {
-            display: none;
-        }
-
-        .champagne-group {
-            width: 120px;
-            right: 0;
-            bottom: 0;
-            opacity: 0.9;
+        .corner-text.top-right {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            top: 20px;
+            right: 20px;
         }
     }
 </style>
 
 <div id="newyear-overlay">
-    <canvas id="celebration-canvas"></canvas>
+    <canvas id="confetti-canvas"></canvas>
 
-    <div class="year-container">
-        <h1 class="year-text">2026</h1>
-        <div class="sub-text">New Beginnings</div>
-    </div>
-
-    <!-- Champagne Bottle & Glass (CORS Friendly) -->
-    <img src="https://pngimg.com/d/champagne_PNG17476.png" class="champagne-group" alt="Champagne Celebration"
-        onerror="this.style.display='none'">
+    <div class="corner-text top-left">Happy<br />2026</div>
+    <div class="corner-text top-right">New<br />Beginnings</div>
 </div>
 
 <script>
-    // Logic: Fireworks + Realistic Confetti (Canvas for CORS-free visuals)
-    (function celebration() {
-        const canvas = document.getElementById('celebration-canvas');
+    // Logic: Click-to-Confetti
+    (function confetti() {
+        const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
+        const overlay = document.getElementById('newyear-overlay');
         let width, height;
 
         function resize() {
@@ -160,96 +136,77 @@
         window.addEventListener('resize', resize);
         resize();
 
-        const particles = [];
-        const confetti = [];
+        const confettiPieces = [];
 
-        // --- Firework Logic ---
-        function createFirework(x, y, color) {
-            for (let i = 0; i < 30; i++) {
-                particles.push({
+        // Create confetti burst at click position
+        function createConfettiBurst(x, y) {
+            const colors = ['#FFD700', '#C0C0C0', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A'];
+            const numPieces = 30;
+
+            for (let i = 0; i < numPieces; i++) {
+                // Create radial spread around click point
+                const angle = (Math.PI * 2 * i) / numPieces + (Math.random() - 0.5) * 0.5;
+                const speed = Math.random() * 5 + 3;
+
+                confettiPieces.push({
                     x: x,
                     y: y,
-                    type: 'firework',
-                    speed: Math.random() * 3 + 1,
-                    angle: Math.random() * Math.PI * 2,
-                    color: color,
+                    w: Math.random() * 10 + 5,
+                    h: Math.random() * 5 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: Math.cos(angle) * speed,
+                    speedY: Math.sin(angle) * speed,
+                    gravity: 0.3,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 20,
                     opacity: 1,
-                    decay: Math.random() * 0.02 + 0.01
+                    decay: Math.random() * 0.01 + 0.005
                 });
             }
         }
 
-        // --- Confetti Logic ---
-        function createConfetti() {
-            if (confetti.length > 100) return; // Limit count
-            confetti.push({
-                x: Math.random() * width,
-                y: -10,
-                type: 'confetti',
-                w: Math.random() * 10 + 5,
-                h: Math.random() * 5 + 3,
-                color: Math.random() > 0.5 ? '#FFD700' : '#C0C0C0', // Gold and Silver
-                speedY: Math.random() * 2 + 1,
-                speedX: Math.random() * 2 - 1,
-                rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 10 - 5
-            });
-        }
+        // Click event listener
+        overlay.addEventListener('click', (e) => {
+            createConfettiBurst(e.clientX, e.clientY);
+        });
 
+        // Animation loop
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
-            // Update Fireworks
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.x += Math.cos(p.angle) * p.speed;
-                p.y += Math.sin(p.angle) * p.speed;
-                p.opacity -= p.decay;
+            for (let i = confettiPieces.length - 1; i >= 0; i--) {
+                const c = confettiPieces[i];
 
-                if (p.opacity <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                } else {
-                    ctx.globalAlpha = p.opacity;
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            // Update Confetti
-            for (let i = 0; i < confetti.length; i++) {
-                const c = confetti[i];
+                // Update physics
+                c.speedY += c.gravity;
+                c.x += c.speedX;
                 c.y += c.speedY;
-                c.x += Math.sin(c.y * 0.01) + c.speedX; // Sway logic
                 c.rotation += c.rotationSpeed;
+                c.opacity -= c.decay;
 
-                if (c.y > height) {
-                    confetti.splice(i, 1);
-                    i--;
-                } else {
-                    ctx.globalAlpha = 1;
-                    ctx.save();
-                    ctx.translate(c.x, c.y);
-                    ctx.rotate(c.rotation * Math.PI / 180);
-                    ctx.fillStyle = c.color;
-                    ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
-                    ctx.restore();
+                // Remove if off screen or faded
+                if (c.y > height || c.opacity <= 0) {
+                    confettiPieces.splice(i, 1);
+                    continue;
                 }
-            }
 
-            // Spawners
-            if (Math.random() < 0.02) {
-                const colors = ['#ffcc00', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
-                createFirework(Math.random() * width, Math.random() * height / 2, colors[Math.floor(Math.random() * colors.length)]);
-            }
-            if (Math.random() < 0.05) {
-                createConfetti();
+                // Draw confetti piece
+                ctx.save();
+                ctx.globalAlpha = c.opacity;
+                ctx.translate(c.x, c.y);
+                ctx.rotate(c.rotation * Math.PI / 180);
+                ctx.fillStyle = c.color;
+                ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+                ctx.restore();
             }
 
             requestAnimationFrame(animate);
         }
         animate();
+
+        // Initial welcome burst
+        setTimeout(() => {
+            createConfettiBurst(width / 2, height / 3);
+        }, 500);
     })();
 </script>
