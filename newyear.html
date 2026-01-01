@@ -21,6 +21,7 @@
         width: 100%;
         text-align: center;
         font-family: 'Cinzel', serif;
+        z-index: 2;
     }
 
     .year-text {
@@ -47,23 +48,26 @@
     }
 
     /* Decorations */
-    .champagne-glass {
+    .champagne-group {
         position: absolute;
         bottom: 0;
-        right: 20px;
-        width: 120px;
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        right: 0;
+        width: 200px;
+        /* Reduced specific size from 250 to avoid pixelation if small */
+        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
         transition: all 0.3s ease;
-        max-width: 20vw;
+        max-width: 35vw;
+        z-index: 2;
     }
 
-    /* Canvas for fireworks */
-    #fireworks-canvas {
+    /* Canvas for fireworks & confetti */
+    #celebration-canvas {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+        z-index: 0;
     }
 
     @keyframes shimmer {
@@ -87,7 +91,7 @@
         }
 
         .year-text {
-            font-size: 2.5rem;
+            font-size: 3rem;
         }
 
         .sub-text {
@@ -95,9 +99,9 @@
             letter-spacing: 3px;
         }
 
-        .champagne-glass {
-            width: 80px;
-            right: 10px;
+        .champagne-group {
+            width: 150px;
+            right: 0;
         }
     }
 
@@ -112,42 +116,40 @@
         }
 
         .year-text {
-            font-size: 2rem;
-            opacity: 0.6;
-            /* Fade out more on mobile */
+            font-size: 2.2rem;
+            opacity: 0.9;
         }
 
         .sub-text {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            opacity: 0.6;
+            display: none;
         }
 
-        .champagne-glass {
-            width: 50px;
-            right: 5px;
-            opacity: 0.8;
+        .champagne-group {
+            width: 120px;
+            right: 0;
+            bottom: 0;
+            opacity: 0.9;
         }
     }
 </style>
 
 <div id="newyear-overlay">
-    <canvas id="fireworks-canvas"></canvas>
+    <canvas id="celebration-canvas"></canvas>
 
     <div class="year-container">
         <h1 class="year-text">2026</h1>
         <div class="sub-text">New Beginnings</div>
     </div>
 
-    <!-- Champagne Glass -->
-    <img src="https://pngimg.com/d/champagne_PNG17476.png" class="champagne-glass" alt="Cheers"
+    <!-- Champagne Bottle & Glass (CORS Friendly) -->
+    <img src="https://pngimg.com/d/champagne_PNG17476.png" class="champagne-group" alt="Champagne Celebration"
         onerror="this.style.display='none'">
 </div>
 
 <script>
-    // Logic: Simple Fireworks Canvas Text
-    (function fireworks() {
-        const canvas = document.getElementById('fireworks-canvas');
+    // Logic: Fireworks + Realistic Confetti (Canvas for CORS-free visuals)
+    (function celebration() {
+        const canvas = document.getElementById('celebration-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
 
@@ -159,32 +161,45 @@
         resize();
 
         const particles = [];
+        const confetti = [];
 
-        function createParticle(x, y, color) {
-            const particle = {
-                x: x,
-                y: y,
-                speed: Math.random() * 3 + 1,
-                angle: Math.random() * Math.PI * 2,
-                color: color,
-                opacity: 1,
-                decay: Math.random() * 0.02 + 0.01
-            };
-            particles.push(particle);
+        // --- Firework Logic ---
+        function createFirework(x, y, color) {
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    type: 'firework',
+                    speed: Math.random() * 3 + 1,
+                    angle: Math.random() * Math.PI * 2,
+                    color: color,
+                    opacity: 1,
+                    decay: Math.random() * 0.02 + 0.01
+                });
+            }
         }
 
-        function explode(x, y) {
-            const colors = ['#ffcc00', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 30; i++) { // Fewer particles for performance
-                createParticle(x, y, color);
-            }
+        // --- Confetti Logic ---
+        function createConfetti() {
+            if (confetti.length > 100) return; // Limit count
+            confetti.push({
+                x: Math.random() * width,
+                y: -10,
+                type: 'confetti',
+                w: Math.random() * 10 + 5,
+                h: Math.random() * 5 + 3,
+                color: Math.random() > 0.5 ? '#FFD700' : '#C0C0C0', // Gold and Silver
+                speedY: Math.random() * 2 + 1,
+                speedX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 10 - 5
+            });
         }
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
-            // Update particles
+            // Update Fireworks
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
                 p.x += Math.cos(p.angle) * p.speed;
@@ -203,9 +218,34 @@
                 }
             }
 
-            // Random explosions
-            if (Math.random() < 0.02) { // 2% chance per frame
-                explode(Math.random() * width, Math.random() * height / 2); // Top half
+            // Update Confetti
+            for (let i = 0; i < confetti.length; i++) {
+                const c = confetti[i];
+                c.y += c.speedY;
+                c.x += Math.sin(c.y * 0.01) + c.speedX; // Sway logic
+                c.rotation += c.rotationSpeed;
+
+                if (c.y > height) {
+                    confetti.splice(i, 1);
+                    i--;
+                } else {
+                    ctx.globalAlpha = 1;
+                    ctx.save();
+                    ctx.translate(c.x, c.y);
+                    ctx.rotate(c.rotation * Math.PI / 180);
+                    ctx.fillStyle = c.color;
+                    ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+                    ctx.restore();
+                }
+            }
+
+            // Spawners
+            if (Math.random() < 0.02) {
+                const colors = ['#ffcc00', '#ffffff', '#ff0000', '#00ff00', '#0000ff'];
+                createFirework(Math.random() * width, Math.random() * height / 2, colors[Math.floor(Math.random() * colors.length)]);
+            }
+            if (Math.random() < 0.05) {
+                createConfetti();
             }
 
             requestAnimationFrame(animate);
