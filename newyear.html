@@ -8,11 +8,9 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        pointer-events: auto;
-        /* Enable clicks for confetti */
+        pointer-events: none;
         box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8);
         transition: box-shadow 0.3s ease;
-        cursor: default;
     }
 
     /* Corner Text */
@@ -57,7 +55,8 @@
         width: 100%;
         height: 100%;
         z-index: 1;
-        pointer-events: none;
+        pointer-events: auto;
+        cursor: default;
     }
 
     @keyframes shimmer {
@@ -165,8 +164,8 @@
             }
         }
 
-        // Click event listener
-        overlay.addEventListener('click', (e) => {
+        // Click event listener on canvas
+        canvas.addEventListener('click', (e) => {
             createConfettiBurst(e.clientX, e.clientY);
         });
 
