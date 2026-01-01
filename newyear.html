@@ -13,38 +13,96 @@
         transition: box-shadow 0.3s ease;
     }
 
-    /* Corner Text */
-    .corner-text {
+    /* Intro Modal */
+    .newyear-intro {
         position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(30, 30, 60, 0.95));
+        border: 2px solid rgba(207, 192, 159, 0.5);
+        border-radius: 20px;
+        padding: 60px 80px;
+        max-width: 800px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+            inset 0 0 40px rgba(207, 192, 159, 0.1);
+        pointer-events: auto;
+        z-index: 10000;
+        opacity: 0;
+        animation: fadeInIntro 1s ease-out forwards;
+    }
+
+    .newyear-intro h1 {
         font-family: 'Cinzel', serif;
+        font-size: 3.5rem;
         font-weight: 700;
         color: transparent;
         background: linear-gradient(to bottom, #cfc09f 0%, #ffecb3 20%, #3a2c0f 100%);
         -webkit-background-clip: text;
         background-clip: text;
         filter: drop-shadow(0 2px 5px black);
-        animation: shimmer 3s infinite linear;
-        pointer-events: none;
-        z-index: 9999;
+        margin: 0 0 30px 0;
         text-align: center;
+        animation: shimmer 3s infinite linear;
     }
 
-    .corner-text.top-left {
-        top: 30px;
-        left: 30px;
-        font-size: 2.5rem;
-        transform: rotate(-30deg);
-        transform-origin: center center;
+    .newyear-intro .quote {
+        font-family: 'Georgia', serif;
+        font-size: 1.5rem;
+        line-height: 1.8;
+        color: #e0d5c0;
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
-    .corner-text.top-right {
-        top: 30px;
-        right: 30px;
-        font-size: 1.2rem;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        transform: rotate(30deg);
-        transform-origin: center center;
+    .newyear-intro .author {
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        color: #cfc09f;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .newyear-intro .close-btn {
+        display: block;
+        margin: 0 auto;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #cfc09f, #ffecb3);
+        border: none;
+        border-radius: 30px;
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(207, 192, 159, 0.4);
+    }
+
+    .newyear-intro .close-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(207, 192, 159, 0.6);
+        background: linear-gradient(135deg, #ffecb3, #cfc09f);
+    }
+
+    .newyear-intro.hidden {
+        display: none;
+    }
+
+    @keyframes fadeInIntro {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
     }
 
     /* Canvas for confetti */
@@ -78,17 +136,17 @@
             box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
         }
 
-        .corner-text.top-left {
-            font-size: 2rem;
-            top: 25px;
-            left: 25px;
+        .newyear-intro {
+            padding: 40px 50px;
+            width: 85%;
         }
 
-        .corner-text.top-right {
-            font-size: 1rem;
-            letter-spacing: 2px;
-            top: 25px;
-            right: 25px;
+        .newyear-intro h1 {
+            font-size: 2.5rem;
+        }
+
+        .newyear-intro .quote {
+            font-size: 1.2rem;
         }
     }
 
@@ -97,17 +155,29 @@
             box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
         }
 
-        .corner-text.top-left {
-            font-size: 1.5rem;
-            top: 20px;
-            left: 20px;
+        .newyear-intro {
+            padding: 30px 25px;
+            width: 90%;
         }
 
-        .corner-text.top-right {
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            top: 20px;
-            right: 20px;
+        .newyear-intro h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .newyear-intro .quote {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .newyear-intro .author {
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .newyear-intro .close-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
         }
     }
 </style>
@@ -115,11 +185,42 @@
 <div id="newyear-overlay">
     <canvas id="confetti-canvas"></canvas>
 
-    <div class="corner-text top-left">Happy<br />2026</div>
-    <div class="corner-text top-right">New<br />Beginnings</div>
+    <div class="newyear-intro" id="newyear-intro">
+        <h1>Welcome to 2026</h1>
+        <p class="quote">"The future belongs to those who believe in the beauty of their dreams."</p>
+        <p class="author">— Eleanor Roosevelt</p>
+    </div>
 </div>
 
 <script>
+    // Intro Modal Logic
+    const introModal = document.getElementById('newyear-intro');
+
+    // Global close function
+    window.closeIntro = function () {
+        if (!introModal) return;
+        introModal.style.transition = 'opacity 1s ease, transform 1s ease';
+        introModal.style.opacity = '0';
+        introModal.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        introModal.style.pointerEvents = 'none';
+
+        setTimeout(() => {
+            introModal.style.display = 'none';
+        }, 1000); // Wait for transition
+    };
+
+    // Check session logic
+    if (sessionStorage.getItem('newYearIntroShown')) {
+        // Already shown this session, hide immediately
+        introModal.style.display = 'none';
+    } else {
+        // First time this session
+        sessionStorage.setItem('newYearIntroShown', 'true');
+
+        // Auto close after 1.5 seconds (plus 1s for fade in)
+        setTimeout(window.closeIntro, 2500);
+    }
+
     // Logic: Click-to-Confetti
     (function confetti() {
         const canvas = document.getElementById('confetti-canvas');
