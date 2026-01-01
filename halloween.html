@@ -7,7 +7,7 @@
         height: 100%;
         z-index: 9999;
         pointer-events: none;
-        box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+        box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
     }
 
     .spider-web {
@@ -16,7 +16,10 @@
         right: 0;
         width: 300px;
         opacity: 0.7;
-        filter: invert(1) drop-shadow(0px 0px 5px black); /* Makes SVG white-ish */
+        filter: invert(1) drop-shadow(0px 0px 5px black);
+        /* Makes SVG white-ish */
+        max-width: 50vw;
+        /* Responsive limit */
     }
 
     .hanging-bat {
@@ -27,6 +30,8 @@
         transform-origin: top center;
         animation: bat-swing 4s ease-in-out infinite;
         filter: drop-shadow(0 0 5px orange);
+        max-width: 25vw;
+        /* Responsive limit */
     }
 
     .pumpkin-corner {
@@ -35,31 +40,74 @@
         left: 10px;
         width: 150px;
         filter: drop-shadow(0 0 10px orange);
+        max-width: 30vw;
+        /* Responsive limit */
     }
 
     @keyframes bat-swing {
-        0% { transform: rotate(5deg) translateY(0); }
-        50% { transform: rotate(-5deg) translateY(5px); }
-        100% { transform: rotate(5deg) translateY(0); }
+        0% {
+            transform: rotate(5deg) translateY(0);
+        }
+
+        50% {
+            transform: rotate(-5deg) translateY(5px);
+        }
+
+        100% {
+            transform: rotate(5deg) translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .spider-web {
+            width: 200px;
+        }
+
+        .hanging-bat {
+            left: 50px;
+            width: 90px;
+        }
+
+        .pumpkin-corner {
+            width: 100px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .spider-web {
+            width: 150px;
+        }
+
+        .hanging-bat {
+            left: 20px;
+            width: 70px;
+        }
+
+        .pumpkin-corner {
+            width: 80px;
+        }
+
+        #halloween-overlay {
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
+            /* Lighter shadow on small screens */
+        }
     }
 </style>
 
 <div id="halloween-overlay">
-    <img src="https://raw.githack.com/RA-L-PH/html-themes/refs/heads/main/pngegg.png" 
-         class="spider-web" alt="Web">
-    
-    <img src="https://pngimg.com/d/bat_PNG12.png" 
-         class="hanging-bat" alt="Bat">
+    <img src="https://raw.githack.com/RA-L-PH/html-themes/refs/heads/main/pngegg.png" class="spider-web" alt="Web">
 
-    <img src="https://www.onlygfx.com/wp-content/uploads/2021/09/pumpkin-drawing-clipart.png" 
-         class="pumpkin-corner" alt="Pumpkin">
+    <img src="https://pngimg.com/d/bat_PNG12.png" class="hanging-bat" alt="Bat">
+
+    <img src="https://www.onlygfx.com/wp-content/uploads/2021/09/pumpkin-drawing-clipart.png" class="pumpkin-corner"
+        alt="Pumpkin">
 </div>
 
 <script>
     // Logic: Random lightning flash effect
     (function lightning() {
         const overlay = document.getElementById('halloween-overlay');
-        
+
         function flash() {
             overlay.style.backgroundColor = 'rgba(255,255,255,0.2)';
             setTimeout(() => {
