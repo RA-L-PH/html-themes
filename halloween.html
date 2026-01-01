@@ -1,4 +1,5 @@
 <style>
+    /* Default Styles */
     #halloween-overlay {
         position: fixed;
         top: 0;
@@ -8,6 +9,7 @@
         z-index: 9999;
         pointer-events: none;
         box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
+        transition: box-shadow 0.3s ease;
     }
 
     .spider-web {
@@ -17,21 +19,20 @@
         width: 300px;
         opacity: 0.7;
         filter: invert(1) drop-shadow(0px 0px 5px black);
-        /* Makes SVG white-ish */
-        max-width: 50vw;
-        /* Responsive limit */
+        transition: all 0.3s ease;
+        max-width: 40vw;
     }
 
     .hanging-bat {
         position: absolute;
         top: 0;
-        left: 100px;
+        left: 15%;
         width: 120px;
         transform-origin: top center;
         animation: bat-swing 4s ease-in-out infinite;
         filter: drop-shadow(0 0 5px orange);
-        max-width: 25vw;
-        /* Responsive limit */
+        transition: all 0.3s ease;
+        max-width: 20vw;
     }
 
     .pumpkin-corner {
@@ -40,8 +41,8 @@
         left: 10px;
         width: 150px;
         filter: drop-shadow(0 0 10px orange);
-        max-width: 30vw;
-        /* Responsive limit */
+        transition: all 0.3s ease;
+        max-width: 25vw;
     }
 
     @keyframes bat-swing {
@@ -58,9 +59,15 @@
         }
     }
 
+    /* Tablet */
     @media (max-width: 768px) {
+        #halloween-overlay {
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
         .spider-web {
-            width: 200px;
+            width: 180px;
+            opacity: 0.5;
         }
 
         .hanging-bat {
@@ -73,23 +80,32 @@
         }
     }
 
+    /* Small Mobile */
     @media (max-width: 480px) {
+        #halloween-overlay {
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+            /* Much lighter vignette */
+        }
+
         .spider-web {
-            width: 150px;
+            width: 80px;
+            /* Drastically reduced */
+            opacity: 0.3;
+            /* Very subtle */
         }
 
         .hanging-bat {
-            left: 20px;
-            width: 70px;
+            left: 5px;
+            /* Pushed to corner */
+            width: 40px;
+            /* Tiny bat */
         }
 
         .pumpkin-corner {
-            width: 80px;
-        }
-
-        #halloween-overlay {
-            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
-            /* Lighter shadow on small screens */
+            width: 50px;
+            /* Small pumpkin */
+            bottom: 5px;
+            opacity: 0.8;
         }
     }
 </style>
