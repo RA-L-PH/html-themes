@@ -165,10 +165,98 @@
             height: 5px;
         }
     }
+
+    /* Spiral Tree Canvas */
+    #scene {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 150px;
+        height: 150px;
+        background: transparent;
+        border-radius: 8px;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Tinsel Styles */
+    .tinsel-stage {
+        position: absolute;
+        width: 100%;
+        height: 250px;
+        pointer-events: none;
+        overflow: visible;
+        left: 0;
+        z-index: 10;
+    }
+
+    .tinsel-garland {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .tinsel-strand {
+        position: absolute;
+        width: 2px;
+        border-radius: 1px;
+        transform-origin: 50% 50%;
+        will-change: transform, top, left, background-color;
+    }
+
+    /* Tinsel positioning classes */
+    .tinsel-top {
+        top: -20px;
+        width: 100%;
+        height: 100px;
+    }
+
+    .tinsel-bottom {
+        bottom: -20px;
+        width: 100%;
+        height: 100px;
+        transform: scaleY(-1);
+    }
+
+    .tinsel-left {
+        top: 100%;
+        left: -20px;
+        width: 100vh;
+        height: 100px;
+        transform-origin: top left;
+        transform: rotate(-90deg);
+    }
+
+    .tinsel-right {
+        top: 0;
+        left: calc(100% + 20px);
+        width: 100vh;
+        height: 100px;
+        transform-origin: top left;
+        transform: rotate(90deg);
+    }
 </style>
 
 <div id="christmas-overlay">
     <div class="snow-container" id="snow-container"></div>
+
+    <!-- Tinsel Garlands -->
+    <!-- Top Garland -->
+    <!-- Tinsel Garlands -->
+    <div id="tinsel-top" class="tinsel-stage tinsel-top">
+        <div class="tinsel-garland"></div>
+    </div>
+    <div id="tinsel-bottom" class="tinsel-stage tinsel-bottom">
+        <div class="tinsel-garland"></div>
+    </div>
+    <div id="tinsel-left" class="tinsel-stage tinsel-left">
+        <div class="tinsel-garland"></div>
+    </div>
+    <div id="tinsel-right" class="tinsel-stage tinsel-right">
+        <div class="tinsel-garland"></div>
+    </div>
 
     <!-- Christmas Lights with String -->
     <div class="lights-container">
@@ -180,6 +268,9 @@
 
     <!-- Santa Peeking from Bottom Left - Only Eyes Visible -->
     <div class="santa-peek">🎅</div>
+
+    <!-- Spiral Christmas Tree -->
+    <canvas id="scene" width="500" height="500"></canvas>
 </div>
 
 <script>
@@ -277,5 +368,283 @@
 
         // Update on resize
         window.addEventListener('resize', updateLights);
+    })();
+
+    // Logic: Spiral Christmas Tree
+    (function tree() {
+        var thetamin = 0,
+            thetamax = 6 * Math.PI,
+            period = 5,
+            linespacing = 1 / 30,
+            linelength = linespacing / 2,
+            yscreenoffset = 300,
+            xscreenoffset = 260,
+            xscreenscale = 360,
+            yscreenscale = 360,
+            ycamera = 2,
+            zcamera = -3,
+            rate = 1 / (2 * Math.PI),
+            factor = rate / 3;
+
+        function run() {
+            var canvas = document.getElementById('scene');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d'),
+                spirals = [
+                    new Spiral({
+                        foreground: "#220000",
+                        angleoffset: Math.PI * 0.92,
+                        factor: 0.90 * factor
+                    }),
+                    new Spiral({
+                        foreground: "#002211",
+                        angleoffset: -Math.PI * 0.08,
+                        factor: 0.90 * factor
+                    }),
+                    new Spiral({
+                        foreground: "#660000",
+                        angleoffset: Math.PI * 0.95,
+                        factor: 0.93 * factor
+                    }),
+                    new Spiral({
+                        foreground: "#003322",
+                        angleoffset: -Math.PI * 0.05,
+                        factor: 0.93 * factor
+                    }),
+                    new Spiral({
+                        foreground: "#ff0000",
+                        angleoffset: Math.PI,
+                        factor: factor
+                    }),
+                    new Spiral({
+                        foreground: "#00ffcc",
+                        angleoffset: 0,
+                        factor: factor
+                    })
+                ];
+
+            renderFrame();
+
+            function renderFrame() {
+                requestAnimationFrame(renderFrame);
+                ctx.clearRect(0, 0, 500, 500);
+                ctx.beginPath();
+                spirals.forEach(renderSpiral);
+            }
+
+            function renderSpiral(spiral) {
+                spiral.render(ctx);
+            }
+
+            function Spiral(config) {
+                var offset = 0;
+                var lineSegments = computeLineSegments();
+
+                this.render = function (ctx) {
+                    offset -= 1;
+                    if (offset <= -period) {
+                        offset += period;
+                    }
+                    if (lineSegments[offset]) {
+                        lineSegments[offset].forEach(drawLineSegment);
+                    }
+                };
+
+                function drawLineSegment(segment) {
+                    stroke(config.foreground, segment.start.alpha);
+                    ctx.moveTo(segment.start.x, segment.start.y);
+                    ctx.lineTo(segment.end.x, segment.end.y);
+                }
+
+                function computeLineSegments() {
+                    var lineSegments = {};
+                    var factor = config.factor;
+                    var thetanew, thetaold;
+                    for (var offset = 0; offset > -period; offset--) {
+                        var lines = [];
+                        lineSegments[offset] = lines;
+                        for (var theta = thetamin + getdtheta(thetamin, offset * linespacing / period, rate, factor); theta < thetamax; theta += getdtheta(theta, linespacing, rate, factor)) {
+                            thetaold = (theta >= thetamin) ? theta : thetamin;
+                            thetanew = theta + getdtheta(theta, linelength, rate, factor);
+
+                            if (thetanew <= thetamin) {
+                                continue;
+                            }
+
+                            lines.push({
+                                start: getPointByAngle(thetaold, factor, config.angleoffset, rate),
+                                end: getPointByAngle(thetanew, factor, config.angleoffset, rate)
+                            });
+                        }
+                    }
+                    return lineSegments;
+                }
+            }
+
+            function stroke(color, alpha) {
+                ctx.closePath();
+                ctx.stroke();
+                ctx.strokeStyle = color;
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+            }
+
+            function getPointByAngle(theta, factor, angleoffset, rate) {
+                var x = theta * factor * Math.cos(theta + angleoffset);
+                var z = -theta * factor * Math.sin(theta + angleoffset);
+                var y = rate * theta;
+                var point = projectTo2d(x, y, z);
+                point.alpha = Math.atan((y * factor / rate * 0.1 + 0.02 - z) * 40) * 0.35 + 0.65;
+                return point;
+            }
+
+            function getdtheta(theta, lineLength, rate, factor) {
+                return lineLength / Math.sqrt(rate * rate + factor * factor * theta * theta);
+            }
+
+            function projectTo2d(x, y, z) {
+                return {
+                    x: xscreenoffset + xscreenscale * (x / (z - zcamera)),
+                    y: yscreenoffset + yscreenscale * ((y - ycamera) / (z - zcamera))
+                };
+            }
+
+            function requestAnimationFrame(callback) {
+                window.setTimeout(callback, 1000 / 24);
+            }
+        }
+
+        run();
+    })();
+
+    // Logic: Tinsel Garlands (Green)
+    (function tinsel() {
+        class Garland {
+            constructor(elementId, config) {
+                this.stage = document.getElementById(elementId);
+                if (!this.stage) return;
+                this.container = this.stage.querySelector('.tinsel-garland');
+                this.config = Object.assign({
+                    strands: 800,
+                    minHeight: 25,
+                    maxHeight: 55,
+                    baseColor: "#228B22", // ForestGreen
+                    amplitude: 0,
+                    sag: 0
+                }, config);
+                this.strandEls = [];
+                this.rAF = null;
+
+                this.init();
+            }
+
+            init() {
+                this.createStrands();
+                this.layout();
+                window.addEventListener("resize", () => {
+                    if (this.rAF) cancelAnimationFrame(this.rAF);
+                    this.rAF = requestAnimationFrame(() => this.layout());
+                });
+                this.animate();
+            }
+
+            hexToHsl(hex) {
+                if (hex.length === 4) hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+                var r = parseInt(hex.substr(1, 2), 16) / 255;
+                var g = parseInt(hex.substr(3, 2), 16) / 255;
+                var b = parseInt(hex.substr(5, 2), 16) / 255;
+                var max = Math.max(r, g, b),
+                    min = Math.min(r, g, b);
+                var h = 0,
+                    s = 0,
+                    l = (max + min) / 2;
+                if (max != min) {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h *= 60;
+                }
+                return {
+                    h: Math.round(h),
+                    s: Math.round(s * 100),
+                    l: Math.round(l * 100)
+                };
+            }
+
+            createStrands() {
+                this.container.innerHTML = "";
+                this.strandEls = [];
+                for (let i = 0; i < this.config.strands; i++) {
+                    const el = document.createElement("div");
+                    el.className = "tinsel-strand";
+                    const h = Math.round(this.config.minHeight + Math.random() * (this.config.maxHeight - this.config.minHeight));
+                    el.dataset.h = h;
+                    el.style.height = h + "px";
+                    this.strandEls.push(el);
+                    this.container.appendChild(el);
+                }
+            }
+
+            layout() {
+                const width = this.stage.offsetWidth;
+                const height = this.stage.offsetHeight;
+                const amplitude = Math.max(4, Math.round(height * this.config.amplitude));
+                const sagPercent = Math.max(0.01, Math.min(1, this.config.sag));
+                const power = 0.7 + (1 - sagPercent) * 1.5;
+                const maxH = Math.max(...this.strandEls.map((s) => Number(s.dataset.h)));
+                const baselineY = Math.round(height * 0.25 - maxH / 2) + 12;
+                const baseHsl = this.hexToHsl(this.config.baseColor);
+
+                for (let i = 0; i < this.strandEls.length; i++) {
+                    const el = this.strandEls[i];
+                    const progress = i / (this.strandEls.length - 1);
+                    let s = Math.sin(progress * Math.PI);
+                    s = Math.pow(s, power);
+                    const yOffset = s * amplitude;
+
+                    const left = Math.round(progress * width);
+                    const strandH = Number(el.dataset.h);
+                    const top = Math.round(baselineY + yOffset - strandH / 2);
+
+                    const tilt = Math.random() * 360 - 180;
+
+                    const roll = Math.random();
+                    if (roll < 0.036) { // White highlight
+                        el.style.backgroundColor = `hsl(60, 100%, 96%)`;
+                    } else {
+                        const lum = Math.max(12, Math.min(92, baseHsl.l + (Math.random() * 48 - 22)));
+                        const sat = Math.max(30, Math.min(100, baseHsl.s + (Math.random() * 20 - 10)));
+                        el.style.backgroundColor = `hsl(${baseHsl.h}, ${sat}%, ${lum}%)`;
+                    }
+
+                    el.style.left = left + "px";
+                    el.style.top = top + "px";
+                    el.style.transform = `rotate(${tilt}deg)`;
+                }
+            }
+
+            animate() {
+                // Animation removed
+            }
+        }
+
+        // Top Garland
+        new Garland('tinsel-top', { baseColor: '#2E8B57' });
+        // Bottom Garland
+        new Garland('tinsel-bottom', { baseColor: '#2E8B57' });
+        // Left Garland
+        new Garland('tinsel-left', { baseColor: '#2E8B57' });
+        // Right Garland
+        new Garland('tinsel-right', { baseColor: '#2E8B57' });
     })();
 </script>
